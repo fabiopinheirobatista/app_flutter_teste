@@ -29,7 +29,6 @@ class HomePage extends StatelessWidget {
         .get(Uri.parse('http://localhost:9090/api/dono-restaurante/nomes'));
 
     if (response.statusCode == 200) {
-      // Decodifica a resposta JSON
       return json.decode(response.body);
     } else {
       throw Exception('Falha ao carregar dados');
@@ -52,7 +51,6 @@ class HomePage extends StatelessWidget {
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('Nenhum dado encontrado'));
           } else {
-            // Exibe os dados em uma lista
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (context, index) {
@@ -90,10 +88,8 @@ class FormPage extends StatelessWidget {
     );
 
     if (response.statusCode == 201) {
-      // Sucesso no cadastro
       print('Cadastro realizado com sucesso');
     } else {
-      // Falha no cadastro
       throw Exception('Falha ao cadastrar dono de restaurante');
     }
   }
