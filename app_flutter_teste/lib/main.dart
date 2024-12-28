@@ -25,8 +25,8 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   Future<List<dynamic>> fetchOwners() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:9090/api/dono-restaurante'));
+    final response = await http
+        .get(Uri.parse('http://localhost:9090/api/dono-restaurante/nomes'));
 
     if (response.statusCode == 200) {
       // Decodifica a resposta JSON
@@ -59,7 +59,7 @@ class HomePage extends StatelessWidget {
                 final owner = snapshot.data![index];
                 return ListTile(
                   title: Text(owner['name']),
-                  subtitle: Text(owner['restaurant']),
+                  subtitle: Text(owner['email']),
                 );
               },
             );
@@ -75,6 +75,28 @@ class FormPage extends StatelessWidget {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _loginController = TextEditingController();
+
+  Future<void> submitForm() async {
+    final response = await http.post(
+      Uri.parse('http://localhost:9090/api/dono-restaurante'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'name': _nomeController.text,
+        'email': _emailController.text,
+        'login': _loginController.text,
+      }),
+    );
+
+    if (response.statusCode == 201) {
+      // Sucesso no cadastro
+      print('Cadastro realizado com sucesso');
+    } else {
+      // Falha no cadastro
+      throw Exception('Falha ao cadastrar dono de restaurante');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +144,7 @@ class FormPage extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    // Processar os dados do formulário
+                    submitForm();
                   }
                 },
                 child: Text('Enviar'),
